@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crops</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="apple-touch-icon" sizes="57x57" href="fav/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="fav/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="fav/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="fav/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="fav/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="fav/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="fav/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="fav/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="fav/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="fav/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="fav/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+    <link rel="manifest" href="fav/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="fav/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body>
+    <div id="preloader"></div>
+    <nav class="navbar" style="background-color:rgb(219, 210, 210)">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+              <img src="logo.png" alt="Logo" width="40" height="30" class="d-inline-block align-text-top">
+              Smart Agriculture
+            </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- <form class="d-flex" role="search">
+            <button id="lg" class="btn btn-outline-danger" type="submit">LogOut</button>
+          </form> -->
+        </div>
+      </div>
+    </nav>
+    <div id="google_translate_element"></div>
+    <h4>Crops:<p id="req" style="color: red;">0</p></h4>
+    <!-- <button style="margin-left: 1400px
+    ; margin-top: -100px;" id="viewer"  type="button" class="btn btn-primary">Viewer</button> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+      #preloader{
+    background: rgb(248, 242, 242) url("Dash_img/spinner.gif") no-repeat center center;
+    background-size: 10%;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    }
+     
+    </style>
+    <table class="table  table-striped">
+        <thead>
+          <tr>
+            <th scope="col">SrNo</th>
+            <th scope="col">Crop Name</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Required Fertilizer</th>
+          </tr>
+        </thead>
+        <tbody id="tbody1">
+        </tbody>
+      </table>
+      <!-- Modal -->
+      <script type="module">
+      //    let mv=document.getElementById('mv');
+      //  mv.addEventListener("click",()=>{
+           
+        //     console.log("hii");
+        // });
+        var srno=0;
+        var bankList=[];
+        var tbody=document.getElementById('tbody1');
+        let viewer=document.getElementById('viewer');
+        // viewer.addEventListener("click",()=>{
+        //   window.location.replace('http://127.0.0.1:5500/viewers.html?');
+        // });
+      import{ initializeApp }from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+      import{ getDatabase,ref,child,get,onValue } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js";
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBayYtITHrOGXE2sMbIT6Ei4kuYG8BCFnc",
+  authDomain: "smart-agriculture-b4b67.firebaseapp.com",
+  databaseURL: "https://smart-agriculture-b4b67-default-rtdb.firebaseio.com",
+  projectId: "smart-agriculture-b4b67",
+  storageBucket: "smart-agriculture-b4b67.appspot.com",
+  messagingSenderId: "393162303371",
+  appId: "1:393162303371:web:331fc2d9d9a42ad2f8b18e",
+  measurementId: "G-L8L8N29JGL"
+};
+const app = initializeApp(firebaseConfig);
+const db=getDatabase(app);
+let req=document.getElementById('req');
+
+function AddAllItemToTable(Bank)
+        {
+            srno=0;
+            tbody.innerHTML=""
+            Bank.forEach(element => {
+                AddItemToTable(element.Crop_Name,element.Duration,element.Required_Fertilizer);
+                checkpl(element.Crop_Name,element.Duration,element.Required_Fertilizer);
+            });
+        }
+    
+        function GetAllDataOnce()
+        {
+            const dbRef=ref(db);
+            let k=0;
+            if(localStorage.getItem("tems")>=22 && localStorage.getItem("tems")<28)
+            {
+                k=28;
+            }
+            else if(localStorage.getItem("tems")>=28 && localStorage.getItem("tems")<36)
+            {
+                k=36;
+            }
+            else if(localStorage.getItem("tems")>=36 && localStorage.getItem("tems")<46)
+            {
+                k=46;
+            }
+            console.log(k);
+            get(child(dbRef, `${k}/`)).then((snapshot) => {
+       var bank=[];
+       snapshot.forEach(childSnapshot=>{
+        bank.push(childSnapshot.val());
+       });
+       AddAllItemToTable(bank);
+});
+        }
+        function Filltable(index){
+          if(index==null)
+             {
+              ai.value="";
+              ad.value="";
+             }
+             else{
+              --index;
+              ai.value=bankList[index][1];
+              ad.value=bankList[index][1];
+             }
+        };
+        // let mv=document.getElementById('mv');
+        // mv.addEventListener("click",()=>{
+        //   console.log("Hii Anuj Patil")
+        // });
+        function checkpl(Crop_Name,Duration,Required_Fertilizer)
+        {
+          localStorage.setItem("cv1",Crop_Name);
+          localStorage.setItem("cv2",Duration);
+          localStorage.setItem("cv3",Required_Fertilizer);
+        }
+       
+        function AddItemToTable(Crop_Name,
+        Duration,Required_Fertilizer)
+        {
+            let trow=document.createElement('tr');
+            let td1=document.createElement('td');
+            let td2=document.createElement('td');
+            let td3=document.createElement('td');
+            let td4=document.createElement('td');
+            bankList.push([Crop_Name,Duration,Required_Fertilizer])
+            td1.innerHTML=++srno;
+            td2.innerHTML=Crop_Name;
+            td4.innerHTML=Duration;
+            td3.innerHTML=Required_Fertilizer;
+            trow.appendChild(td1);
+            trow.appendChild(td2);
+            trow.appendChild(td4);
+            trow.appendChild(td3);
+            req.innerText=srno;
+           // var control=document.createElement('div')
+            td1.addEventListener("click",()=>{
+              location.assign("http://127.0.0.1:5500/mnb.html")
+            })
+            // control.innerHTML=' <button id="mv" type="button" class="btn btn-primary my-2 ml-2" onclick="Anuj()"> View</button
+            tbody.appendChild(trow);
+           
+
+      
+        }
+        let ai= document.getElementById('ai')
+        let ad=   document.getElementById('ad')
+        let fn=   document.getElementById('fn')
+        let ed=  document.getElementById('ed')
+        let mb=  document.getElementById('mb')
+        let dob=  document.getElementById('dob')
+        let ka=  document.getElementById('ka')
+        let add=  document.getElementById('add')
+        let dt=  document.getElementById('dt')
+        let ta=  document.getElementById('ta')
+        let pin=  document.getElementById('pin')
+        let gr=  document.getElementById('gr')
+
+
+        let acc=  document.getElementById('acc')
+        let rej=  document.getElementById('rej')
+       
+        window.onload=GetAllDataOnce;
+      </script>
+       <script>
+        function googleTranslateElementInit(){
+            new google.translate.TranslateElement(
+                {pageLanguage:'en'},
+                'google_translate_element'
+            );
+        }
+        let loader=document.getElementById('preloader');
+      window.addEventListener("load",()=>{
+        loader.style.display="none";
+      });
+        addEventListener("load",()=>{
+      setTimeout(() => {
+        window.location.replace('login.html');
+      }, 1800000);
+    });
+    </script>
+  </body>
+</html>
